@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+  <div class="container py-5 row">
+    <aside class="col-12 col-md-3">
+      <img style="margin-bottom: 40px" src="{% static 'img/workplace.png' %}" width=100% alt="Рабочий стол">
+      <p style="font-style: italic">Это моё рабочее место</p>
+    </aside>
+    <article style="padding-left: 70px" class="col-12 col-md-9">
+      <h1>Привет, я Кобзев Вячеслав, автор этого проекта.</h1>
+      <p>
+        Работал бухгалтером, снабженцем, а теперь я тут.<br>
+        Всю жизнь избегал всего, что связано с программированием,
+        но по работе пришлось познакомиться с SQL, а затем и с питоном.<br>
+        В итоге приручил питона, подружился с пандой, не боюсь анаконды.
+      </p>
+      <p>
+        <a href="https://t.me/MrSlavencio/" target="_blank"><img style="margin-bottom: 40px" src="{% static 'img/logo-telegram.png' %}" width=10% alt="Telegram">
+        <a href="https://github.com/MrSlavencio/" target="_blank"><img style="margin-bottom: 40px" src="{% static 'img/GitHub-logo.png' %}" width=16% alt="GitHub">
+      </p>
+    </article>
+  </div>
+{% endblock %} 
