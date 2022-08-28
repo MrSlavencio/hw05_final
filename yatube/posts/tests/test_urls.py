@@ -43,8 +43,10 @@ class TaskURLTests(TestCase):
             '/create/': HTTPStatus.FOUND,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
             '/follow/': HTTPStatus.FOUND,
-            f'/profile/{TaskURLTests.post_author.username}/follow/': HTTPStatus.FOUND,
-            f'/profile/{TaskURLTests.post_author.username}/follow/': HTTPStatus.FOUND,
+            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            HTTPStatus.FOUND,
+            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            HTTPStatus.FOUND,
         }
         for url, status_code in urls_asset.items():
             with self.subTest(url=url):
@@ -62,8 +64,10 @@ class TaskURLTests(TestCase):
             '/create/': HTTPStatus.OK,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
             '/follow/': HTTPStatus.OK,
-            f'/profile/{TaskURLTests.post_author.username}/follow/': HTTPStatus.FOUND,
-            f'/profile/{TaskURLTests.post_author.username}/follow/': HTTPStatus.FOUND,
+            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            HTTPStatus.FOUND,
+            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            HTTPStatus.FOUND,
         }
         for url, status_code in urls_asset.items():
             with self.subTest(url=url):
@@ -81,8 +85,10 @@ class TaskURLTests(TestCase):
             '/create/': HTTPStatus.OK,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
             '/follow/': HTTPStatus.OK,
-            f'/profile/{TaskURLTests.post_author.username}/follow/': HTTPStatus.FOUND,
-            f'/profile/{TaskURLTests.post_author.username}/unfollow/': HTTPStatus.FOUND,
+            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            HTTPStatus.FOUND,
+            f'/profile/{TaskURLTests.post_author.username}/unfollow/':
+            HTTPStatus.FOUND,
         }
         for url, status_code in urls_asset.items():
             with self.subTest(url=url):
