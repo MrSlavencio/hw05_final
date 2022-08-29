@@ -144,17 +144,17 @@ def follow_index(request):
 def profile_follow(request, username):
     current_follows = Follow.objects.filter(
         author__following__user=request.user)
-    if current_follows != 0:
-        for follow in current_follows:
-            if follow.author.username != username:
-                new_follow = Follow(user=request.user, author=User.objects.get(
-                    username=username))
-                new_follow.save()
-                break
     new_follow = Follow(user=request.user, author=User.objects.get(
-        username=username))
-    if new_follow.user != new_follow.author:
-        new_follow.save()
+                        username=username))
+    if len(current_follows) == 0:
+        if new_follow.user != new_follow.author:
+            new_follow.save()
+    else:
+        for follow in current_follows:
+            print(follow.author.username)
+            if (username != follow.author.username
+               and new_follow.user != new_follow.author):
+                new_follow.save()
     return redirect('posts:follow_index')
 
 
