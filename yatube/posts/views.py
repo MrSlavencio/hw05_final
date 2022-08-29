@@ -153,7 +153,8 @@ def profile_follow(request, username):
                 break
     new_follow = Follow(user=request.user, author=User.objects.get(
         username=username))
-    new_follow.save()
+    if new_follow.user != new_follow.author:
+        new_follow.save()
     return redirect('posts:follow_index')
 
 
