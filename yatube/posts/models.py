@@ -127,5 +127,9 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'], name='already_following'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(author=models.F("user")),
+                name="prevent_self_follow"
             )
         ]
