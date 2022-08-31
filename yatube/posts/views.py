@@ -140,17 +140,13 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    current_follows = Follow.objects.filter(
-        author__following__user=request.user)
-    new_follow = Follow(user=request.user, author=User.objects.get(
-                        username=username))
-    if len(current_follows) != 0:
-        for follow in current_follows:
-            if (username != follow.author.username
-               and new_follow.user != new_follow.author):
-                new_follow.save()
-    if new_follow.user != new_follow.author:
-        new_follow.save()
+    author = get_object_or_404(User, username=username)
+    if request.user != author:
+        Follow.objects.get_or_create(
+            user=request.user,
+            author=author
+        )
+        return redirect('posts:follow_index')
     return redirect('posts:follow_index')
 
 
