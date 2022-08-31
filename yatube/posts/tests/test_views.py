@@ -72,7 +72,7 @@ class PostURLTests(TestCase):
                      kwargs={'pk': PostURLTests.post.id})):
             'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
-            reverse('posts:follow_index'): 'posts/index.html',
+            reverse('posts:follow_index'): 'posts/index.html'
         }
         for reverse_name, template in templates_pages_names_for_author.items():
             with self.subTest(reverse_name=reverse_name):
@@ -173,11 +173,50 @@ class PostURLTests(TestCase):
         self.group = response.context.get('post').group
         if self.group:
             self.assertEqual(self.group, PostURLTests.post.group)
+
+    def test_comment_for_authorized_user(self):
+        """Комментарии может создавать и просматривать авторизованный
+        пользователь."""
+        num_comments = Comment.objects.count()
+        form_data = {
+            'text': 'Тестовый комментарий 2',
+        }
+        self.authorized_client.post(
+            reverse('posts:add_comment',
+                    kwargs={'post_id': PostURLTests.post.id}),
+            data=form_data,
+            follow=True
+        )
+        self.assertEqual(num_comments + 1, Comment.objects.count())
+        response = (self.authorized_client.
+                    get(reverse('posts:post_detail',
+                        kwargs={'post_id': PostURLTests.post.id})))
         self.comment = response.context.get('comments')
-        if self.comment:
-            self.first_comment = self.comment[0]
-            self.assertEqual(self.first_comment.text,
-                             PostURLTests.comment.text)
+        self.first_comment = self.comment[0]
+        self.assertEqual(self.first_comment.text,
+                         form_data['text'])
+
+    def test_comment_for_guest_client(self):
+        """Комментарии не может создавать, но может просматривать
+        гость."""
+        num_comments = Comment.objects.count()
+        form_data = {
+            'text': 'Тестовый комментарий 2',
+        }
+        self.guest_client.post(
+            reverse('posts:add_comment',
+                    kwargs={'post_id': PostURLTests.post.id}),
+            data=form_data,
+            follow=True
+        )
+        self.assertEqual(num_comments, Comment.objects.count())
+        response = (self.authorized_client.
+                    get(reverse('posts:post_detail',
+                        kwargs={'post_id': PostURLTests.post.id})))
+        self.comment = response.context.get('comments')
+        self.first_comment = self.comment[0]
+        self.assertEqual(self.first_comment.text,
+                         PostURLTests.comment.text)
 
     def test_edit_post_page_show_correct_context(self):
         """Шаблон edit_post сформирован с правильным контекстом."""

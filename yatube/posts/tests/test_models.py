@@ -1,7 +1,8 @@
+from xml.etree.ElementTree import Comment
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from ..models import Group, Post
+from ..models import Follow, Group, Post, Comment
 
 User = get_user_model()
 
@@ -11,6 +12,7 @@ class PostModelTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.follower = User.objects.create_user(username='user2')
         cls.group = Group.objects.create(
             title='Тестовая группа',
             slug='Тестовый слаг',
@@ -21,6 +23,15 @@ class PostModelTest(TestCase):
             text=('Тестовый пост, который должен быть '
                   'больше 15 символов, т.к. __str__ должен '
                   'вернуть именно столько!'),
+        )
+        cls.follow = Follow.objects.create(
+            user=cls.follower,
+            author=cls.user
+        )
+        cls.comment = Comment.objects.create(
+            post=cls.post,
+            author=cls.follower,
+            text='Тестовый текст комментария'
         )
 
     def test_models_have_correct_object_names(self):
@@ -86,3 +97,29 @@ class PostModelTest(TestCase):
             with self.subTest(field=field):
                 self.assertEqual(
                     group._meta.get_field(field).help_text, expected_value)
+
+    def test_follow_help_text(self):
+        """help_text модели Follow в полях совпадает с ожидаемым."""
+        follow = PostModelTest.follow
+        field_help_texts = {
+            'user': 'Пользователь, который подписывается',
+            'author': 'Пользователь, на которого подписываются',
+        }
+        for field, expected_value in field_help_texts.items():
+            with self.subTest(field=field):
+                self.assertEqual(
+                    follow._meta.get_field(field).help_text, expected_value)
+
+    def test_comment_help_text(self):
+        """help_text модели Comment в полях совпадает с ожидаемым."""
+        comment = PostModelTest.comment
+        field_help_texts = {
+            'post': 'Ссылка на пост',
+            'author': 'Автор комментария',
+            'text': 'Текст комментария',
+            'created': 'Дата публикации комментария'
+        }
+        for field, expected_value in field_help_texts.items():
+            with self.subTest(field=field):
+                self.assertEqual(
+                    comment._meta.get_field(field).help_text, expected_value)

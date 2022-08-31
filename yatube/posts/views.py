@@ -43,14 +43,12 @@ def profile(request, username):
     page_obj = paginator.get_page(page_number)
     following = False
     guest = True
-    if request.user.__str__() != 'AnonymousUser':
+    if request.user.is_authenticated:
+        following = Follow.objects.filter(
+            user=request.user,
+            author=profile
+        ).exists()
         guest = False
-        current_follows = Follow.objects.filter(
-            author__following__user=request.user)
-        for follow in current_follows:
-            if follow.author.username == username:
-                following = True
-                break
     context = {
         'author': profile,
         'page_obj': page_obj,
@@ -146,15 +144,13 @@ def profile_follow(request, username):
         author__following__user=request.user)
     new_follow = Follow(user=request.user, author=User.objects.get(
                         username=username))
-    if len(current_follows) == 0:
-        if new_follow.user != new_follow.author:
-            new_follow.save()
-    else:
+    if len(current_follows) != 0:
         for follow in current_follows:
-            print(follow.author.username)
             if (username != follow.author.username
                and new_follow.user != new_follow.author):
                 new_follow.save()
+    if new_follow.user != new_follow.author:
+        new_follow.save()
     return redirect('posts:follow_index')
 
 

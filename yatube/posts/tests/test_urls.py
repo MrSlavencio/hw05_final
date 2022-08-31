@@ -45,7 +45,7 @@ class TaskURLTests(TestCase):
             '/follow/': HTTPStatus.FOUND,
             f'/profile/{TaskURLTests.post_author.username}/follow/':
             HTTPStatus.FOUND,
-            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            f'/profile/{TaskURLTests.post_author.username}/unfollow/':
             HTTPStatus.FOUND,
         }
         for url, status_code in urls_asset.items():
@@ -66,7 +66,7 @@ class TaskURLTests(TestCase):
             '/follow/': HTTPStatus.OK,
             f'/profile/{TaskURLTests.post_author.username}/follow/':
             HTTPStatus.FOUND,
-            f'/profile/{TaskURLTests.post_author.username}/follow/':
+            f'/profile/{TaskURLTests.post_author.username}/unfollow/':
             HTTPStatus.FOUND,
         }
         for url, status_code in urls_asset.items():
@@ -126,3 +126,37 @@ class TaskURLTests(TestCase):
             with self.subTest(address=address):
                 response = self.guest_client.get(address)
                 self.assertTemplateUsed(response, template)
+
+    def test_urls_unfollow_redirect_for_authorized_user(self):
+        """При отписке, авторизованный пользователь перенаправляется
+        на страницу с подписками."""
+        response = (self.authorized_client
+                    .get(f'/profile/{TaskURLTests.post_author.username}'
+                         '/unfollow/'))
+        self.assertRedirects(response, '/follow/')
+
+    def test_urls_unfollow_redirect_for_guest_client(self):
+        """При отписке, гость перенаправляется
+        на страницу регистрации."""
+        response = (self.guest_client
+                    .get(f'/profile/{TaskURLTests.post_author.username}'
+                         '/unfollow/'))
+        self.assertRedirects(response, ('/auth/login/?next=/profile/'
+                                        f'{TaskURLTests.post_author.username}/'
+                                        'unfollow/'))
+
+    def test_urls_comment_redirect_for_authorized_user(self):
+        """При отправке комментария, авторизованный пользователь
+        перенаправляется на страницу с подписками."""
+        response = (self.authorized_client
+                    .post(f'/posts/{TaskURLTests.post.id}/comment/'))
+        self.assertRedirects(response, f'/posts/{TaskURLTests.post.id}/')
+
+    def test_urls_comment_redirect_for_guest_client(self):
+        """При попытке отправки комментария, гость
+        перенаправляется на страницу с подписками."""
+        response = (self.guest_client
+                    .post(f'/posts/{TaskURLTests.post.id}/comment/'))
+        self.assertRedirects(response,
+                             f'/auth/login/?next=/posts/{TaskURLTests.post.id}'
+                             '/comment/')

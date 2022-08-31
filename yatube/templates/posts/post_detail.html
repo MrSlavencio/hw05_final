@@ -9,9 +9,6 @@
     <aside class="col-12 col-md-3">
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
-          <!--
-          Дата публикации: {{ post.pub_date|date:"d E Y" }}
-          -->
           Дата публикации: {{ post.created|date:"d E Y" }}
         </li>
         {% if post.group %}
@@ -59,7 +56,6 @@
           </div>
         </div>
       {% endif %}
-
       {% for comment in comments %}
         <div class="media mb-4">
           <div class="media-body">

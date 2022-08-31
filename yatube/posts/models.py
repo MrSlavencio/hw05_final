@@ -10,13 +10,6 @@ class Post(CreatedModel):
         verbose_name='Текст',
         help_text='Текст поста'
     )
-    """
-    pub_date = models.DateTimeField(
-        verbose_name='Дата публикации',
-        auto_now_add=True,
-        help_text='Дата публикации поста'
-    )
-    """
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
@@ -93,13 +86,11 @@ class Comment(CreatedModel):
         verbose_name='Текст',
         help_text='Текст комментария'
     )
-    """
     created = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now_add=True,
         help_text='Дата публикации комментария'
     )
-    """
 
     def __str__(self):
         len_to_show: int = 15
@@ -133,3 +124,9 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_follow'
+            )
+        ]

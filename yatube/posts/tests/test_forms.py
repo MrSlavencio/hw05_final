@@ -205,3 +205,21 @@ class PostCreateFormTests(TestCase):
             follow=True
         )
         self.assertEqual(comments_count, Comment.objects.count())
+
+    def test_comments_by_author(self):
+        """Комментировать посты может автор поста.
+        После заполнения формы с комментарием, комментарий добавляется в БД."""
+        comments_count = Comment.objects.count()
+        form_data = {
+            'text': 'Тестовый текст комментария',
+        }
+        self.post_author_client.post(
+            reverse('posts:add_comment',
+                    kwargs={'post_id': PostCreateFormTests.post.id}),
+            data=form_data,
+            follow=True
+        )
+        self.assertEqual(comments_count + 1, Comment.objects.count())
+        self.assertEqual(Comment.objects
+                         .get(post_id=PostCreateFormTests.post.id).text,
+                         form_data['text'])
