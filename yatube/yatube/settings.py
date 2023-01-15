@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '7tx9yynsh=!czqxyc$_%qc48r5s6l@5unbbigbs0s#9=h$zr!^'
 
-DEBUG = True
+DEBUG = False
 
 
 
@@ -25,6 +25,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    '158.160.26.45'
 ]
 
 INSTALLED_APPS = [
